@@ -166,6 +166,7 @@ def get_pm25(aqicn_url: str, country: str, city: str, street: str, day: datetime
         # Extract the air quality data
         aqi_data = data['data']
         aq_today_df = pd.DataFrame()
+        #print(aqi_data)
         aq_today_df['pm25'] = [aqi_data['iaqi'].get('pm25', {}).get('v', None)]
         aq_today_df['pm25'] = aq_today_df['pm25'].astype('float32')
 
