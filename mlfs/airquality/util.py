@@ -166,6 +166,7 @@ def get_pm25(aqicn_url: str, country: str, city: str, street: str, day: datetime
         # Extract the air quality data
         aqi_data = data['data']
         aq_today_df = pd.DataFrame()
+        #print(aqi_data)
         aq_today_df['pm25'] = [aqi_data['iaqi'].get('pm25', {}).get('v', None)]
         aq_today_df['pm25'] = aq_today_df['pm25'].astype('float32')
 
@@ -293,7 +294,7 @@ def backfill_predictions_for_monitoring(weather_fg, air_quality_df, monitor_fg, 
     features_df = features_df.sort_values(by=['date'], ascending=True)
     features_df = features_df.tail(10)
     df = pd.merge(features_df, air_quality_df[['date','pm25','street','country', 'lag_1', 'lag_2', 'lag_3']], on="date")
-    df['predicted_pm25'] = model.predict(df[['temperature_2m_mean', 'precipitation_sum', 'wind_speed_10m_max', 'wind_direction_10m_dominant', 'lag_1', 'lag_2', 'lag_3']])
+    df['predicted_pm25'] = model.predict(df[['lag_1', 'lag_2', 'lag_3','temperature_2m_mean', 'precipitation_sum', 'wind_speed_10m_max', 'wind_direction_10m_dominant']])
     df['days_before_forecast_day'] = 1
     hindcast_df = df
     df = df.drop('pm25', axis=1)
