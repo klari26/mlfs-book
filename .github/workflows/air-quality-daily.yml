@@ -32,7 +32,10 @@ jobs:
         env:
           HOPSWORKS_API_KEY: ${{ secrets.HOPSWORKS_API_KEY }}
         run: |
-          ipython notebooks/airquality/2_air_quality_feature_pipeline.ipynb
+          ipython notebooks/airquality/2_air_quality_feature_pipeline_SENSOR1.ipynb
+          ipython notebooks/airquality/2_air_quality_feature_pipeline_SENSOR2.ipynb
+          ipython notebooks/airquality/2_air_quality_feature_pipeline_SENSOR3.ipynb
+          ipython notebooks/airquality/2_air_quality_feature_pipeline_SENSOR4.ipynb
           ipython notebooks/airquality/4_air_quality_batch_inference.ipynb
       - name: github pages publish
         uses: stefanzweifel/git-auto-commit-action@v5
