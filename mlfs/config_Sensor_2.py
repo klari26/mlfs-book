@@ -30,8 +30,8 @@ class HopsworksSettings(BaseSettings):
     AQICN_API_KEY: SecretStr | None = None
     AQICN_COUNTRY: str | None = None
     AQICN_CITY: str | None = None
-    AQICN_STREET: str | None = None
-    AQICN_URL: str | None = None
+    AQICN_STREET_Sensor_2: str | None = None
+    AQICN_URL_Sensor_2: str | None = None
     
     # Other API Keys
     FELDERA_API_KEY: SecretStr | None = None    
@@ -96,13 +96,13 @@ class HopsworksSettings(BaseSettings):
         if not aqicn_city:
             missing.append("AQICN_CITY")
         # 5. AQICN_STREET
-        aqicn_street = self.AQICN_STREET or os.getenv("AQICN_STREET")
-        if not aqicn_street:
-            missing.append("AQICN_STREET")
+        aqicn_street_Sensor_2 = self.AQICN_STREET_Sensor_2 or os.getenv("AQICN_STREET_Sensor_2")
+        if not aqicn_street_Sensor_2:
+            missing.append("AQICN_STREET_Sensor_2")
         # 6. AQICN_URL
-        aqicn_url = self.AQICN_URL or os.getenv("AQICN_URL")
-        if not aqicn_url:
-            missing.append("AQICN_URL")
+        aqicn_url_Sensor_2 = self.AQICN_URL_Sensor_2 or os.getenv("AQICN_URL_Sensor_2")
+        if not aqicn_url_Sensor_2:
+            missing.append("AQICN_URL_Sensor_2")
 
         if missing:
             raise ValueError(
