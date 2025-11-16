@@ -2,8 +2,9 @@
 
 This repository contains the source code for a machine learning pipeline that predicts PM2.5 in Rome. The system retrieves data from four distinct sensors across the city, engineers features, trains individual models for each sensor, and runs a daily batch inference pipeline to generate forecasts.
 
-The sensors chosen for this project are: Via Clelia, Via Placido Zurla, Via Assisi, and Via Salvatore Lorizzo
-#![Alt text for the image](path/to/your/image.png)
+The sensors chosen for this project are: Via Clelia, Via Placido Zurla, Via Assisi, and Via Salvatore Lorizzo. The following image shows the AQICN page and the sensors retrieved, specifically for Sensor 1 (Via Clelia).
+
+![Example of 1 sensor in the AQCIN page](Example_sensorMap.png)
 
 ## mlfs-book
 
@@ -67,7 +68,7 @@ This project guides the process from data preparation to model deployment and mo
     * Connects to Hopsworks and downloads the trained XGBoost models for all sensors 
     * Fetches the latest 6-day weather forecast data from the `weather_sensor` feature group
     * Performs auto-regressive inference: It predicts Day 1 and uses that prediction as a feature (lag) to predict Day 2, and so on for all 6 days
-    * Saves the resulting forecast and hindcast plots
+    * Saves the resulting forecast and hindcast plots. Here is an example of the plots: ![Example of hindcast](Example_Hindcast.png)
     * Uploads the predictions to a monitoring feature group (`aq_predictions_lagged_sx`)
 
 ### 5. `5_function_calling.ipynb`
@@ -131,8 +132,19 @@ This project guides the process from data preparation to model deployment and mo
 
 ## Project Workflow (PyInvoke)
 This project uses invoke commands to run the entire MLOps pipeline
-* `invoke aq-backfill`: Runs only once the first notebook to backfill the Hopsworks feature store with historical data for all sensors
-* `invoke aq-features`: Runs daily the second notebook to update the air quality and weather feature store
-* `invoke aq-train`: Runs the third notebook to train the XGBoost model for each sensor and save them to the model registry
-* `invoke aq-inference`: Runs the fourth notebook to load the trained models, fetch the latest feature data, and generate 6-day forecasts for all four sensors
+* `invoke aq-backfill`: Runs only once `1_air_quality_feature_backfill_SENSORX.ipynb` to backfill the Hopsworks feature store with historical data for all sensors
+* `invoke aq-train`: Runs `3_air_quality_training_pipeline_SENSORX.ipynb` to train the XGBoost model for each sensor and save them to the model registry
+* `invoke aq-features` & `invoke aq-inference`: This pipeline is run daily as a scheduled job. The tasks are run in this order:
+
+    1.  `invoke aq-features`: Gets the latest data for each sensor
+        ```bash
+        jupyter nbconvert --to notebook --execute notebooks/airquality/2_air_quality_feature_pipeline_SENSOR1.ipynb
+        jupyter nbconvert --to notebook --execute notebooks/airquality/2_air_quality_feature_pipeline_SENSOR2.ipynb
+        jupyter nbconvert --to notebook --execute notebooks/airquality/2_air_quality_feature_pipeline_SENSOR3.ipynb
+        jupyter nbconvert --to notebook --execute notebooks/airquality/2_air_quality_feature_pipeline_SENSOR4.ipynb
+        ```
+    2.  `invoke aq-inference`: Runs the batch inference notebook and generate the 6-day forecasts for all sensors
+        ```bash
+        jupyter nbconvert --to notebook --execute notebooks/airquality/4_air_quality_batch_inference.ipynb
+        ```
 * `invoke aq-clean`: A utility task to clean up the feature groups or models created in Hopsworks
