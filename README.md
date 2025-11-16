@@ -36,6 +36,7 @@ This project guides the process from data preparation to model deployment and mo
 * **Purpose:** Backfill historical data
 * **Actions:**
     * Reads a local CSV file containing historical PM2.5 data
+    * Fetches data for 13 weather features
     * Creates lag features (lag_1, lag_2, lag_3)
     * Connects to Hopsworks and inserts this historical data into the `air_quality_lagged_sensorx` feature group
 
