@@ -2,6 +2,8 @@
 
 This repository contains the source code for a machine learning pipeline that predicts PM2.5 in Rome. The system retrieves data from four distinct sensors across the city, engineers features, trains individual models for each sensor, and runs a daily batch inference pipeline to generate forecasts.
 
+The sensors chosen for this project are: Via Clelia, Via Placido Zurla, Via Assisi, and Via Salvatore Lorizzo
+#![Alt text for the image](path/to/your/image.png)
 
 ## mlfs-book
 
@@ -126,3 +128,11 @@ This project guides the process from data preparation to model deployment and mo
 
 **Note:** Step 1-3 must be done for each sensor. Step 2 and 4 need to be scheduled to run daily.
 
+
+## Project Workflow (PyInvoke)
+This project uses invoke commands to run the entire MLOps pipeline
+* `invoke aq-backfill`: Runs only once the first notebook to backfill the Hopsworks feature store with historical data for all sensors
+* `invoke aq-features`: Runs daily the second notebook to update the air quality and weather feature store
+* `invoke aq-train`: Runs the third notebook to train the XGBoost model for each sensor and save them to the model registry
+* `invoke aq-inference`: Runs the fourth notebook to load the trained models, fetch the latest feature data, and generate 6-day forecasts for all four sensors
+* `invoke aq-clean`: A utility task to clean up the feature groups or models created in Hopsworks
